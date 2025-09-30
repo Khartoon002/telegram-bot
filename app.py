@@ -1,7 +1,6 @@
 import os
 import asyncio
 from textwrap import dedent
-from datetime import timedelta
 
 from aiogram import Bot, Dispatcher, types, F
 from aiogram.enums import ParseMode, ChatAction
@@ -15,7 +14,7 @@ from aiogram.webhook.aiohttp_server import SimpleRequestHandler
 # ===========================
 # ENV VARS (Render/Railway)
 # ===========================
-BOT_TOKEN = os.getenv("BOT_TOKEN")  # set in host dashboard
+BOT_TOKEN = os.getenv("BOT_TOKEN")
 PUBLIC_BASE_URL = os.getenv("PUBLIC_BASE_URL")  # e.g. https://magnus-bot.onrender.com
 WEBHOOK_SECRET = os.getenv("WEBHOOK_SECRET", "magnus-secret")
 WEBHOOK_PATH = f"/tg/{WEBHOOK_SECRET}"
@@ -25,11 +24,11 @@ if not BOT_TOKEN or not PUBLIC_BASE_URL:
     raise RuntimeError("BOT_TOKEN and PUBLIC_BASE_URL must be set as environment variables.")
 
 # ===========================
-# BOT + DISPATCHER
+# BOT + DISPATCHER (HTML mode)
 # ===========================
 bot = Bot(
     token=BOT_TOKEN,
-    default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN)
+    default=DefaultBotProperties(parse_mode=ParseMode.HTML)
 )
 dp = Dispatcher()
 
@@ -42,184 +41,159 @@ IMAGES = {
     "register": "https://magnuswebsite.site/img/magnus_register.jpg",
 }
 ANIMS = {
-    # optional celebratory animation (replace with your own hosted .gif/.mp4 if you like)
     "celebrate": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYjM3YzA5MGQ2M2ZkMDk0M2I5NTRmOWQxM2EwYWFkZjFjYTcxY2Y5MiZjdD1n/26gslU06gXJ5a9aYs/giphy.gif"
 }
 
 # ===========================
-# Features & Earnings (new)
+# Features & Earnings (HTML)
 # ===========================
 MAGNUS_UNIQUE = dedent("""\
-▫ *Magnus offers thousands of digital products* you can access anytime.  
-▫ Some products are usable *immediately*, others need deeper study—*you choose*.  
-▫ Some skills take *minutes*, others *months*—*your pace, your path*.  
-▫ Learn *multiple* skills to increase your income.  
-▫ The *more skills* you learn and the *more time* you work, the *more you earn*.  
-▫ Become a *digital retailer* and earn *millions monthly* (no referrals required).  
-▫ Withdraw via *PayPal*, *USDT*, or *local bank account*.  
-▫ *100% refundable* entry fee—can be recovered within *5 days* of joining.
+▫ <b>Magnus offers thousands of digital products</b> you can access anytime.<br>
+▫ Some products are usable <i>immediately</i>, others need deeper study — <b>you choose</b>.<br>
+▫ Some skills take <i>minutes</i>, others <i>months</i> — <b>your pace, your path</b>.<br>
+▫ Learn <b>multiple</b> skills to increase your income.<br>
+▫ The <b>more skills</b> you learn and the <b>more time</b> you work, the <b>more you earn</b>.<br>
+▫ Become a <b>digital retailer</b> and earn <b>millions monthly</b> (no referrals required).<br>
+▫ Withdraw via <b>PayPal</b>, <b>USDT</b>, or a <b>local bank account</b>.<br>
+▫ <b>100% refundable</b> entry fee — can be recovered within <b>5 days</b> of joining.
 """)
 
 MAGNUS_EMP_EARNINGS = dedent("""\
-*Earnings for Magnus Employees*
-
-① Gain Valuable Skills  
-② Get Trained  
-③ Get Employed  
-④ Start Making Money
-
-• Every *30 minutes* of work: *₦2,499*  
-• 1 hour  = *₦4,999.8*  
-• 2 hours = *₦9,999.6*  
-• 3 hours = *₦14,999.4*
-
-⭐ Work *6 hours daily* → *₦29,998.8/day*, *₦209,991.6/week*, *₦899,964/30 days*
-
-*Pro tip:* Learn *two skills* and multitask to *double your income*:  
-• 1 day:  ₦59,997.6  
-• 2 days: ₦119,995.2  
-• 3 days: ₦179,992.8  
-• 4 days: ₦239,990.4
-
-⚡ You can also become a *digital retailer* and earn *millions monthly*—*no referrals needed*.
+<b>Earnings for Magnus Employees</b><br><br>
+① Gain Valuable Skills<br>
+② Get Trained<br>
+③ Get Employed<br>
+④ Start Making Money<br><br>
+• Every <b>30 minutes</b> of work: <b>₦2,499</b><br>
+• 1 hour  = <b>₦4,999.8</b><br>
+• 2 hours = <b>₦9,999.6</b><br>
+• 3 hours = <b>₦14,999.4</b><br><br>
+⭐ Work <b>6 hours daily</b> → <b>₦29,998.8/day</b>, <b>₦209,991.6/week</b>, <b>₦899,964/30 days</b><br><br>
+<b>Pro tip:</b> Learn <b>two skills</b> and multitask to <b>double your income</b>:<br>
+• 1 day:  ₦59,997.6<br>
+• 2 days: ₦119,995.2<br>
+• 3 days: ₦179,992.8<br>
+• 4 days: ₦239,990.4<br><br>
+⚡ You can also become a <b>digital retailer</b> and earn <b>millions monthly</b> — <i>no referrals needed</i>.
 """)
 
 # ===========================
-# Section Texts
+# Section Texts (HTML)
 # ===========================
 SECTION_TEXT = {
-    "what_is": dedent("""\
-        *MAGNUS — Your Shortcut to Digital Freedom*
+    "what_is": dedent(f"""\
+<b>MAGNUS — Your Shortcut to Digital Freedom</b><br><br>
+MAGNUS is a digital marketplace for <b>in-demand skills</b> and <b>powerful products</b>
+(trading tools, signals, analytics, courses). Use them for <i>personal growth</i> or
+<i>resell for profit</i>. With flexible plans, instant earning routes, and global job
+offers, MAGNUS helps you <b>learn, earn, and grow</b>.<br><br>
+{MAGNUS_UNIQUE}
+"""),
 
-        MAGNUS is a digital marketplace for *in-demand skills* and *powerful products*
-        (trading tools, signals, analytics, courses). Use them for *personal growth* or
-        *resell for profit*. With flexible plans, instant earning routes, and global job
-        offers, MAGNUS helps you *learn, earn, and grow*.
-        
-        {}
-    """).format(MAGNUS_UNIQUE),
+    "features": dedent(f"""\
+<b>What You Get (Earning Features + Legitimacy)</b><br><br>
+• Trading Tools — stay ahead in the markets<br>
+• Signals &amp; Analytics — make smarter moves<br>
+• Hot Courses — learn skills in minutes, not months<br>
+• Resale Rights — earn while others are still learning<br><br>
 
-    "features": dedent("""\
-        *What You Get (Earning Features + Legitimacy)*
+<b>Entry Plans</b><br>
+• <b>MAGNUS BUSINESS</b> — ₦28,500<br>
+&nbsp;&nbsp;Unlimited products • Full resale rights • Create &amp; sell your own • Instant job after skills<br>
+&nbsp;&nbsp;Commissions: Direct ₦17,100 | Indirect ₦1,300<br><br>
 
-        • Trading Tools — stay ahead in the markets  
-        • Signals & Analytics — make smarter moves  
-        • Hot Courses — learn skills in minutes, not months  
-        • Resale Rights — earn while others are still learning
+• <b>MAGNUS PRO</b> — ₦17,500<br>
+&nbsp;&nbsp;Limited access • Low resale rights • Learn for growth<br>
+&nbsp;&nbsp;Earn via PR entry data up to ₦985 every 2 minutes (when available)<br>
+&nbsp;&nbsp;Commissions: Direct ₦11,500 | Indirect ₦650<br><br>
 
-        *Entry Plans*
-        • *MAGNUS BUSINESS* — ₦28,500  
-          Unlimited products • Full resale rights • Create & sell your own • Instant job after skills  
-          Commissions: Direct ₦17,100 | Indirect ₦1,300
+• <b>MAGNUS LITE</b> — ₦11,500<br>
+&nbsp;&nbsp;1 product • No resale rights<br>
+&nbsp;&nbsp;Earn via referrals + data entry up to ₦985 every 2 minutes (when available)<br>
+&nbsp;&nbsp;Commissions: Direct ₦7,500 | Indirect ₦350<br><br>
 
-        • *MAGNUS PRO* — ₦17,500  
-          Limited access • Low resale rights • Learn for growth  
-          Earn via PR entry data up to ₦985 every 2 minutes (when available)  
-          Commissions: Direct ₦11,500 | Indirect ₦650
-
-        • *MAGNUS LITE* — ₦11,500  
-          1 product • No resale rights  
-          Earn via referrals + data entry up to ₦985 every 2 minutes (when available)  
-          Commissions: Direct ₦7,500 | Indirect ₦350
-
-        *Earnings Potential*
-        • Profit ₦5,000+ per sale  
-        • Company handles ads & logistics  
-        • Free resale setup manual (1–72hrs sales cycle)  
-        • Multiple streams: Skills + Resale + Commissions + Global Jobs
-
-        {}
-    """).format(MAGNUS_EMP_EARNINGS),
+<b>Earnings Potential</b><br>
+• Profit ₦5,000+ per sale<br>
+• Company handles ads &amp; logistics<br>
+• Free resale setup manual (1–72hrs sales cycle)<br>
+• Multiple streams: Skills + Resale + Commissions + Global Jobs<br><br>
+{MAGNUS_EMP_EARNINGS}
+"""),
 
     "register": dedent("""\
-        *How to Register (Simple Steps)*
-
-        1) Choose your entry plan: *Business*, *Pro*, or *Lite*.  
-        2) Tap *Register Now*, pick your country, and pay to the displayed account.  
-        3) Send your receipt here in chat.  
-        4) Get activated and start learning, using products, and earning.
-
-        *Tip:* Start now. The sooner you begin, the faster you unlock skills, resale rights, and job routes.
-    """),
+<b>How to Register (Simple Steps)</b><br><br>
+1) Choose your entry plan: <b>Business</b>, <b>Pro</b>, or <b>Lite</b>.<br>
+2) Tap <b>Register Now</b>, pick your country, and pay to the displayed account.<br>
+3) Send your receipt here in chat.<br>
+4) Get activated and start learning, using products, and earning.<br><br>
+<i>Tip: Start now. The sooner you begin, the faster you unlock skills, resale rights, and job routes.</i>
+"""),
 }
 
 # ===========================
-# Payments (NG updated)
+# Payments (HTML; NG updated)
 # ===========================
 PAYMENT_DETAILS = {
     "NG": dedent("""\
-        🇳🇬 *Nigeria — Bank Transfer (No OPay)*
-
-        • *Bank:* Moniepoint MFB  
-        • *Account Number:* `6054080105`  
-        • *Account Name:* *SPINO CLINTON UCHENNA*
-
-        🔔 *OPay payments are NOT allowed.* Please use *bank transfer* only.
-
-        *One-time Fees:*  
-        • Magnus Business: ₦28,500  
-        • Magnus Pro: ₦17,500  
-        • Magnus Lite: ₦11,500
-
-        *Perks for Paying *Now**:*  
-        • ⚡ *Priority Activation* — jump the queue  
-        • 🎁 *Starter Toolkit* — quick-start guides + templates  
-        • 🛡️ *5-Day Entry Fee Safety* — recoverable on terms stated  
-        • 💼 *Fast-Track Jobs* (Business tier) — early slot access
-
-        After payment, *send your receipt here* for instant processing.
-    """),
+🇳🇬 <b>Nigeria — Bank Transfer (No OPay)</b><br><br>
+• <b>Bank:</b> Moniepoint MFB<br>
+• <b>Account Number:</b> <code>6054080105</code><br>
+• <b>Account Name:</b> <b>SPINO CLINTON UCHENNA</b><br><br>
+🔔 <b>OPay payments are NOT allowed.</b> Please use <b>bank transfer</b> only.<br><br>
+<b>One-time Fees:</b><br>
+• Magnus Business: ₦28,500<br>
+• Magnus Pro: ₦17,500<br>
+• Magnus Lite: ₦11,500<br><br>
+<b>Perks for Paying Now:</b><br>
+• ⚡ <b>Priority Activation</b> — jump the queue<br>
+• 🎁 <b>Starter Toolkit</b> — guides &amp; templates<br>
+• 🛡️ <b>5-Day Entry Fee Safety</b> — recoverable on stated terms<br>
+• 💼 <b>Fast-Track Jobs</b> (Business tier) — early slot access<br><br>
+After payment, <b>send your receipt here</b> for instant processing.
+"""),
     "GH": dedent("""\
-        🇬🇭 *Ghana — Mobile Money*
-        • Name: REPLACE_ME_MOMO_NAME
-        • Network: REPLACE_ME_NETWORK
-        • MoMo Number: REPLACE_ME_MOMO_NUMBER
-
-        *Equivalent Fees:* confirm current rate  
-        • Business ≈ NGN 28,500  
-        • Pro ≈ NGN 17,500  
-        • Lite ≈ NGN 11,500
-
-        Send proof of payment here to proceed.
-    """),
+🇬🇭 <b>Ghana — Mobile Money</b><br>
+• Name: REPLACE_ME_MOMO_NAME<br>
+• Network: REPLACE_ME_NETWORK<br>
+• MoMo Number: REPLACE_ME_MOMO_NUMBER<br><br>
+<b>Equivalent Fees:</b> confirm current rate<br>
+• Business ≈ NGN 28,500<br>
+• Pro ≈ NGN 17,500<br>
+• Lite ≈ NGN 11,500<br><br>
+Send proof of payment here to proceed.
+"""),
     "KE": dedent("""\
-        🇰🇪 *Kenya — M-Pesa*
-        • Name: REPLACE_ME_MPESA_NAME
-        • Till/PayBill: REPLACE_ME_MPESA_TILL
-        • Number: REPLACE_ME_MPESA_NUMBER
-
-        *Equivalent Fees:* confirm current rate  
-        • Business ≈ NGN 28,500  
-        • Pro ≈ NGN 17,500  
-        • Lite ≈ NGN 11,500
-
-        Send proof of payment here to proceed.
-    """),
+🇰🇪 <b>Kenya — M-Pesa</b><br>
+• Name: REPLACE_ME_MPESA_NAME<br>
+• Till/PayBill: REPLACE_ME_MPESA_TILL<br>
+• Number: REPLACE_ME_MPESA_NUMBER<br><br>
+<b>Equivalent Fees:</b> confirm current rate<br>
+• Business ≈ NGN 28,500<br>
+• Pro ≈ NGN 17,500<br>
+• Lite ≈ NGN 11,500<br><br>
+Send proof of payment here to proceed.
+"""),
     "ZA": dedent("""\
-        🇿🇦 *South Africa — EFT*
-        • Account Name: REPLACE_ME_ACCOUNT_NAME
-        • Bank: REPLACE_ME_BANK
-        • Account No: REPLACE_ME_ACCOUNT_NUMBER
-
-        *Equivalent Fees:* confirm current rate  
-        • Business ≈ NGN 28,500  
-        • Pro ≈ NGN 17,500  
-        • Lite ≈ NGN 11,500
-
-        Send proof of payment here to proceed.
-    """),
+🇿🇦 <b>South Africa — EFT</b><br>
+• Account Name: REPLACE_ME_ACCOUNT_NAME<br>
+• Bank: REPLACE_ME_BANK<br>
+• Account No: REPLACE_ME_ACCOUNT_NUMBER<br><br>
+<b>Equivalent Fees:</b> confirm current rate<br>
+• Business ≈ NGN 28,500<br>
+• Pro ≈ NGN 17,500<br>
+• Lite ≈ NGN 11,500<br><br>
+Send proof of payment here to proceed.
+"""),
     "INTL": dedent("""\
-        🌍 *International — USD / Wise / PayPal*
-        • Method: REPLACE_ME_METHOD (e.g., Wise/PayPal)
-        • Handle/Email: REPLACE_ME_EMAIL_OR_HANDLE
-
-        *Guide (edit to official USD pricing):*  
-        • Business: $35  
-        • Pro: $25  
-        • Lite: $18
-
-        After payment, reply with your receipt to activate access.
-    """),
+🌍 <b>International — USD / Wise / PayPal</b><br>
+• Method: REPLACE_ME_METHOD (e.g., Wise/PayPal)<br>
+• Handle/Email: REPLACE_ME_EMAIL_OR_HANDLE<br><br>
+<b>Guide (edit to official USD pricing):</b><br>
+• Business: $35<br>
+• Pro: $25<br>
+• Lite: $18<br><br>
+After payment, reply with your receipt to activate access.
+"""),
 }
 
 # ===========================
@@ -268,10 +242,6 @@ async def human_typing(chat_id: int, seconds: float = 1.2):
 # Countdown Engine (edits msg)
 # ===========================
 async def start_countdown(chat_id: int, message_id: int, total_seconds: int = 300):
-    """
-    Edits the same message with a ticking countdown (every 10s).
-    Telegram rate limits apply; 10s steps are friendly.
-    """
     step = 10
     remain = total_seconds
     while remain > 0:
@@ -282,50 +252,40 @@ async def start_countdown(chat_id: int, message_id: int, total_seconds: int = 30
                 chat_id=chat_id,
                 message_id=message_id,
                 text=dedent(f"""\
-                    ⏳ *Secure your perks by completing payment now*
-
-                    • *Priority Activation* — jump the queue  
-                    • *Starter Toolkit* — guides & templates  
-                    • *5-Day Entry Fee Safety*  
-                    • *Fast-Track Jobs* (Business tier)
-
-                    *Nigeria — Pay via Bank Transfer (No OPay)*  
-                    *Bank:* Moniepoint MFB  
-                    *Acct:* `6054080105`  
-                    *Name:* *SPINO CLINTON UCHENNA*
-
-                    Time left to lock perks: *{timer}*
-                    _After transfer, send your receipt here for instant processing._
-                """),
+⏳ <b>Secure your perks by completing payment now</b><br><br>
+• <b>Priority Activation</b> — jump the queue<br>
+• <b>Starter Toolkit</b> — guides &amp; templates<br>
+• <b>5-Day Entry Fee Safety</b><br>
+• <b>Fast-Track Jobs</b> (Business tier)<br><br>
+<b>Nigeria — Pay via Bank Transfer (No OPay)</b><br>
+<b>Bank:</b> Moniepoint MFB<br>
+<b>Acct:</b> <code>6054080105</code><br>
+<b>Name:</b> <b>SPINO CLINTON UCHENNA</b><br><br>
+Time left to lock perks: <b>{timer}</b><br>
+<i>After transfer, send your receipt here for instant processing.</i>
+"""),
                 reply_markup=kb_back_menu()
             )
         except Exception:
-            # If message was changed by user actions or edited too fast, ignore.
             pass
         await asyncio.sleep(step)
         remain -= step
 
-    # Final nudge
     try:
         await bot.edit_message_text(
             chat_id=chat_id,
             message_id=message_id,
             text=dedent("""\
-                ✅ *Timer ended.*
-
-                You can still complete payment to join MAGNUS — but *priority perks* may no longer apply.
-                
-                *Nigeria — Bank Transfer (No OPay)*  
-                *Bank:* Moniepoint MFB  
-                *Acct:* `6054080105`  
-                *Name:* *SPINO CLINTON UCHENNA*
-
-                _Send your receipt here to activate your access._
-            """),
+✅ <b>Timer ended.</b><br><br>
+You can still complete payment to join MAGNUS — but <b>priority perks</b> may no longer apply.<br><br>
+<b>Nigeria — Bank Transfer (No OPay)</b><br>
+<b>Bank:</b> Moniepoint MFB<br>
+<b>Acct:</b> <code>6054080105</code><br>
+<b>Name:</b> <b>SPINO CLINTON UCHENNA</b><br><br>
+<i>Send your receipt here to activate your access.</i>
+"""),
             reply_markup=kb_back_menu()
         )
-        # Optional little celebration animation when they reply with proof (handled manually by you),
-        # but we can pre-warm with a friendly animation here:
         await bot.send_animation(chat_id, ANIMS["celebrate"])
     except Exception:
         pass
@@ -336,16 +296,15 @@ async def start_countdown(chat_id: int, message_id: int, total_seconds: int = 30
 @dp.message(CommandStart())
 async def on_start(message: types.Message):
     await human_typing(message.chat.id, 1.0)
-    text = dedent(f"""\
-        *Welcome to MAGNUS!*
-        This bot will guide you through:
-        • What MAGNUS is
-        • Earning Features + Legitimacy
-        • How to Register (with your country’s payment details)
-
-        👉 Tap the Telegram *Start* button to begin, then choose an option below.
-        Need help? Reply here and we’ll assist you.
-    """)
+    text = dedent("""\
+<b>Welcome to MAGNUS!</b><br>
+This bot will guide you through:<br>
+• What MAGNUS is<br>
+• Earning Features + Legitimacy<br>
+• How to Register (with your country’s payment details)<br><br>
+👉 Tap the Telegram <b>Start</b> button to begin, then choose an option below.<br>
+Need help? Reply here and we’ll assist you.
+""")
     await message.answer(text, reply_markup=kb_main_menu())
 
 @dp.message(Command("menu"))
@@ -354,7 +313,7 @@ async def on_menu(message: types.Message):
 
 async def show_section(chat_id: int, key: str):
     await human_typing(chat_id, 0.8)
-    caption = SECTION_TEXT[key] + "\n\n" + "_Tap the button below to proceed._"
+    caption = SECTION_TEXT[key] + "<br><i>Tap the button below to proceed.</i>"
     photo_url = IMAGES.get(key, IMAGES["what_is"])
     await bot.send_photo(
         chat_id=chat_id,
@@ -391,9 +350,7 @@ async def on_cb(callback: CallbackQuery):
         await human_typing(chat_id, 0.8)
         sent = await bot.send_message(chat_id, details, reply_markup=kb_back_menu())
 
-        # Special behavior for Nigeria: start visible countdown + perks lock-in
         if code == "NG":
-            # Kick off countdown in background (doesn't block webhook loop)
             asyncio.create_task(start_countdown(chat_id, sent.message_id, total_seconds=300))
 
     elif data.startswith("back:"):
@@ -415,15 +372,9 @@ def build_app() -> web.Application:
     app = web.Application()
     app.on_startup.append(on_startup)
     app.on_shutdown.append(on_shutdown)
-
-    # Route only the webhook path to aiogram
     SimpleRequestHandler(dispatcher=dp, bot=bot, secret_token=None).register(app, path=WEBHOOK_PATH)
-
-    # Optional health check
-    async def health(_):
-        return web.Response(text="OK")
+    async def health(_): return web.Response(text="OK")
     app.router.add_get("/", health)
-
     return app
 
 if __name__ == "__main__":
